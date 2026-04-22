@@ -1,0 +1,172 @@
+<Window x:Class="FastFoodOrderSystem.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="PrimePlate" Height="850" Width="1300"
+        WindowStartupLocation="CenterScreen" Background="#F0F4F8"
+        FontFamily="Segoe UI Variable Display, Segoe UI">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="AccentColor" Color="#FF4757"/>
+        <SolidColorBrush x:Key="WoltBlue" Color="#009DE0"/>
+        <SolidColorBrush x:Key="DarkBg" Color="#1A1A1A"/>
+
+        <Style x:Key="PrimePlateButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="12" Name="border">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid x:Name="LoginGrid" Visibility="Visible" Panel.ZIndex="100" Background="White">
+            <!-- unchanged login UI -->
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="350">
+                <TextBlock Text="PrimePlate" FontSize="48" FontWeight="Black" Foreground="{StaticResource AccentColor}" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                <TextBlock Text="Prihláste sa pre pokračovanie" Margin="0,0,0,30" HorizontalAlignment="Center" Foreground="Gray"/>
+                <TextBlock Text="Používateľské meno" Margin="0,10,0,5" FontWeight="Bold"/>
+                <TextBox x:Name="UsernameInput" Height="40" VerticalContentAlignment="Center" Padding="10,0"/>
+                <TextBlock Text="Heslo" Margin="0,10,0,5" FontWeight="Bold"/>
+                <PasswordBox x:Name="PasswordInput" Height="40" VerticalContentAlignment="Center" Padding="10,0"/>
+                <Button Content="PRIHLÁSIŤ SA" Margin="0,30,0,10" Style="{StaticResource PrimePlateButton}" Click="Login_Click"/>
+                <Button Content="Vytvoriť nový účet" Background="Transparent" Foreground="Gray" BorderThickness="0" Click="Register_Click"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid x:Name="MainAppGrid" Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="260"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="380"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Background="{StaticResource DarkBg}">
+                <StackPanel Margin="25">
+                    <TextBlock Text="PrimePlate" FontSize="28" FontWeight="Black" Foreground="White" Margin="0,0,0,40"/>
+                    <Button Content="🏠 Reštaurácie" Background="Transparent" Foreground="White" BorderThickness="0" HorizontalContentAlignment="Left" Click="NavRestaurants_Click" Margin="0,5"/>
+                    <Button Content="🍔 Moje Menu" Background="Transparent" Foreground="White" BorderThickness="0" HorizontalContentAlignment="Left" Margin="0,5"/>
+                    <Button Content="👤 Môj Profil" Background="Transparent" Foreground="White" BorderThickness="0" HorizontalContentAlignment="Left" Margin="0,5"/>
+                    <Border Margin="0,50,0,0" Padding="15" Background="#222" CornerRadius="10">
+                        <StackPanel>
+                            <TextBlock Text="STATUS" FontSize="10" Foreground="Gray"/>
+                            <TextBlock x:Name="StatusText" Text="Hladný? Objednajte si!" Foreground="{StaticResource AccentColor}" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Border>
+                    <Button Content="Odhlásiť sa" VerticalAlignment="Bottom" Margin="0,200,0,0" Click="Logout_Click" Foreground="#555" Background="Transparent" BorderThickness="0"/>
+                </StackPanel>
+            </Border>
+
+            <Grid Grid.Column="1" Margin="30">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock x:Name="PageTitle" Text="Vyberte si reštauráciu" FontSize="32" FontWeight="Bold" Margin="0,0,0,20"/>
+
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,20">
+                    <Button Content="Všetko" Click="FilterCategory_Click" Tag="All" Margin="0,0,10,0" Width="80" Style="{StaticResource PrimePlateButton}" Background="#DDD" Foreground="Black"/>
+                    <Button Content="Burgery" Click="FilterCategory_Click" Tag="Burger" Margin="0,0,10,0" Width="80" Style="{StaticResource PrimePlateButton}" Background="#DDD" Foreground="Black"/>
+                    <Button Content="Pizza" Click="FilterCategory_Click" Tag="Pizza" Margin="0,0,10,0" Width="80" Style="{StaticResource PrimePlateButton}" Background="#DDD" Foreground="Black"/>
+                    <Button Content="Nápoje" Click="FilterCategory_Click" Tag="Drink" Margin="0,0,10,0" Width="80" Style="{StaticResource PrimePlateButton}" Background="#DDD" Foreground="Black"/>
+                </StackPanel>
+
+                <!-- ADMIN PANEL: add / remove items -->
+                <Border Grid.Row="1" Margin="0,70,0,0" Padding="10" Background="#FFFFFF" CornerRadius="10" HorizontalAlignment="Left">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="8">
+                        <TextBox x:Name="NewNameInput" Width="160" PlaceholderText="Name"/>
+                        <TextBox x:Name="NewCategoryInput" Width="120" PlaceholderText="Category"/>
+                        <TextBox x:Name="NewPriceInput" Width="80" PlaceholderText="Price"/>
+                        <TextBox x:Name="NewDescInput" Width="260" PlaceholderText="Description"/>
+                        <Button Content="Add" Click="AddFood_Click" Width="80" Style="{StaticResource PrimePlateButton}"/>
+                        <Button Content="Remove Selected" Click="RemoveFood_Click" Width="150" Background="#EEE" BorderThickness="0"/>
+                    </StackPanel>
+                </Border>
+
+                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Hidden">
+                    <!-- Converted to ListBox so items can be selected -->
+                    <ListBox x:Name="ItemsDisplay" ItemsSource="{Binding FilteredItems}" BorderThickness="0" Background="Transparent" SelectionMode="Single">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="White" Width="250" Height="200" Margin="10" CornerRadius="20">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="15" Opacity="0.05"/>
+                                    </Border.Effect>
+                                    <Grid Margin="15">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="18" Foreground="Black"/>
+                                            <TextBlock Text="{Binding Description}" FontSize="12" Foreground="Gray" TextWrapping="Wrap" Margin="0,5" Height="40"/>
+                                            <DockPanel LastChildFill="False" Margin="0,10,0,0">
+                                                <TextBlock Text="{Binding Price, StringFormat={}{0:N2}€}" FontWeight="Bold" Foreground="{StaticResource AccentColor}" VerticalAlignment="Center" FontSize="16"/>
+                                                <Button Content="+" Click="AddToCart_Click" DockPanel.Dock="Right" Width="35" Height="35" Style="{StaticResource PrimePlateButton}"/>
+                                            </DockPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </ScrollViewer>
+            </Grid>
+
+            <Border Grid.Column="2" Background="White" CornerRadius="40,0,0,40" Padding="30">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Košík" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+
+                    <ListBox Grid.Row="1" ItemsSource="{Binding Cart}" BorderThickness="0" Background="Transparent">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,5">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding Price, StringFormat={}{0:N2}€}" Foreground="Gray"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Button Content="-" Click="Qty_Click" Tag="minus" Width="20" Background="#EEE" BorderThickness="0"/>
+                                        <TextBlock Text="{Binding Quantity}" Margin="10,0" VerticalAlignment="Center" FontWeight="Bold"/>
+                                        <Button Content="+" Click="Qty_Click" Tag="plus" Width="20" Background="#EEE" BorderThickness="0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <StackPanel Grid.Row="2">
+                        <Separator Margin="0,10"/>
+                        <DockPanel Margin="0,10">
+                            <TextBlock Text="SPOLU" FontWeight="Bold" FontSize="20"/>
+                            <TextBlock Text="{Binding Total, StringFormat={}{0:N2}€}" HorizontalAlignment="Right" FontWeight="Bold" FontSize="20" Foreground="{StaticResource AccentColor}"/>
+                        </DockPanel>
+                    <Button Content="ZAPLATIŤ" Style="{StaticResource PrimePlateButton}" Height="60" Click="Pay_Click"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>
