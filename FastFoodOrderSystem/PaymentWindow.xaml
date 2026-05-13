@@ -1,0 +1,52 @@
+<Window x:Class="FastFoodOrderSystem.PaymentWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Platba" Height="320" Width="420" WindowStartupLocation="CenterOwner">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="TitleText" FontSize="18" FontWeight="Bold" />
+
+        <StackPanel Grid.Row="1" Margin="0,10,0,10">
+            <TextBlock Text="Spôsob platby:" FontWeight="Bold"/>
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <RadioButton x:Name="CardRadio" Content="Karta" IsChecked="True" Margin="0,0,10,0" Checked="PaymentMethodChanged"/>
+                <RadioButton x:Name="CashRadio" Content="Hotovosť" Checked="PaymentMethodChanged"/>
+            </StackPanel>
+
+            <StackPanel Margin="0,10">
+                <TextBlock Text="Dostupné body:"/>
+                <TextBlock x:Name="AvailablePointsText" FontWeight="Bold"/>
+            </StackPanel>
+
+            <StackPanel Margin="0,5">
+                <TextBlock Text="Použiť body (počet):"/>
+                <TextBox x:Name="PointsInput" Width="120" Text="0"/>
+                <TextBlock Text="Každé 1 bod = 0.10€" FontSize="10" Foreground="#666"/>
+            </StackPanel>
+
+            <StackPanel Margin="0,10">
+                <TextBlock Text="Suma na zaplatenie:"/>
+                <TextBlock x:Name="TotalText" FontWeight="Bold"/>
+            </StackPanel>
+
+                <StackPanel x:Name="CardFields" Margin="0,10">
+                <TextBlock Text="Detaily karty:" FontWeight="Bold"/>
+                <TextBox x:Name="CardNumber" />
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <TextBox x:Name="Expiry" Width="120" />
+                    <TextBox x:Name="CVV" Width="80" Margin="10,0" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Zrušiť" Width="90" Margin="0,0,10,0" Click="Cancel_Click"/>
+            <Button Content="Zaplať" Width="90" Click="Pay_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

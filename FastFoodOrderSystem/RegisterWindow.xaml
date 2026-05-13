@@ -1,0 +1,28 @@
+<Window x:Class="FastFoodOrderSystem.RegisterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Registrácia" Height="300" Width="380" WindowStartupLocation="CenterOwner">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Vytvoriť účet" FontSize="18" FontWeight="Bold"/>
+
+        <StackPanel Grid.Row="1" Margin="0,10">
+            <TextBlock Text="Používateľské meno"/>
+            <TextBox x:Name="RegUsername" />
+            <TextBlock Text="Heslo" Margin="0,8,0,0"/>
+            <PasswordBox x:Name="RegPassword" />
+            <TextBlock Text="E-mail" Margin="0,8,0,0"/>
+            <TextBox x:Name="RegEmail" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Zrušiť" Width="90" Margin="0,0,10,0" Click="Cancel_Click"/>
+            <Button Content="Registrovať" Width="100" Click="Register_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
