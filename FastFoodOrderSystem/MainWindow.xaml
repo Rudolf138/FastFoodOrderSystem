@@ -65,7 +65,7 @@
                     <TextBlock Text="PrimePlate" FontSize="28" FontWeight="Black" Foreground="White" Margin="0,0,0,40"/>
 
                     <Button Content="🏠 Reštaurácie" Background="Transparent" Foreground="White" BorderThickness="0" HorizontalContentAlignment="Left" Click="NavRestaurants_Click" Margin="0,5"/>
-                    <Button Content="🍔 Moje Menu" Background="Transparent" Foreground="White" BorderThickness="0" HorizontalContentAlignment="Left" Margin="0,5"/>
+                    <Button Content="🍔 Moje Menu" Background="Transparent" Foreground="White" BorderThickness="0" HorizontalContentAlignment="Left" Margin="0,5" Click="NavMyMenu_Click"/>
                     <Button Content="👤 Môj Profil" Background="Transparent" Foreground="White" BorderThickness="0" HorizontalContentAlignment="Left" Margin="0,5" Click="NavProfile_Click"/>
 
                     <Border Margin="0,50,0,0" Padding="15" Background="#222" CornerRadius="10">
@@ -150,34 +150,63 @@
                     <ListBox Grid.Row="1" ItemsSource="{Binding Cart}" BorderThickness="0" Background="Transparent">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin="0,5">
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
-                                        <TextBlock Text="{Binding Restaurant}" FontSize="11" Foreground="#666"/>
-                                        <TextBlock Text="{Binding PriceAfterDiscount, StringFormat={}{0:N2}€}" Foreground="Gray"/>
-                                        <TextBlock Text="{Binding DiscountPercent, StringFormat=-{0}%}" Foreground="#B33" FontSize="11"/>
-                                        <TextBlock Text="{Binding LineTotal, StringFormat={}{0:N2}€}" FontWeight="Bold" Foreground="{StaticResource AccentColor}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                        <Button Content="-" Click="Qty_Click" Tag="minus" Width="20" Background="#EEE" BorderThickness="0"/>
-                                        <TextBlock Text="{Binding Quantity}" Margin="10,0" VerticalAlignment="Center" FontWeight="Bold"/>
-                                        <Button Content="+" Click="Qty_Click" Tag="plus" Width="20" Background="#EEE" BorderThickness="0"/>
-                                        <Button Content="Odstrániť" Click="RemoveFromCart_Click" Margin="8,0,0,0" Width="70" Background="#F88" Foreground="White" BorderThickness="0"/>
-                                    </StackPanel>
-                                </Grid>
+                                <Border Background="Transparent" Margin="0,5">
+                                    <Grid Margin="6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="120" />
+                                            <ColumnDefinition Width="90" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="14" TextWrapping="Wrap" />
+                                            <TextBlock Text="{Binding Restaurant}" FontSize="11" Foreground="#666" />
+                                            <TextBlock Text="{Binding PriceAfterDiscount, StringFormat={}{0:N2}€}" Foreground="Gray" />
+                                            <TextBlock Text="{Binding LineTotal, StringFormat={}{0:N2}€}" FontWeight="Bold" Foreground="{StaticResource AccentColor}" />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Button Content="-" Click="Qty_Click" Tag="minus" Width="30" Height="30" Background="#EEE" BorderThickness="0" />
+                                            <TextBlock Text="{Binding Quantity}" Margin="8,0" VerticalAlignment="Center" FontWeight="Bold" />
+                                            <Button Content="+" Click="Qty_Click" Tag="plus" Width="30" Height="30" Background="#EEE" BorderThickness="0" />
+                                        </StackPanel>
+
+                                        <Button Grid.Column="2" Content="Odstrániť" Click="RemoveFromCart_Click" Width="80" Height="40" Background="#F88" Foreground="White" BorderThickness="0" />
+                                    </Grid>
+                                </Border>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
 
                     <StackPanel Grid.Row="2">
-                        <Separator Margin="0,10"/>
+                        <Separator Margin="0,10" />
+
+                        <StackPanel Orientation="Vertical" Margin="0,6">
+                            <TextBlock Text="Vernostné body:" FontWeight="Bold" />
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,6">
+                                <TextBlock Text="Dostupné: " VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding LoyaltyPoints}" FontWeight="Bold" Margin="4,0" VerticalAlignment="Center" />
+                                <TextBlock Text=" body (1 bod = 0.10€)" Margin="8,0" VerticalAlignment="Center" Foreground="#666" />
+                                <CheckBox Content="Použiť body" IsChecked="{Binding UsePoints}" Margin="12,0,0,0" VerticalAlignment="Center" />
+                                <TextBox Width="60" Text="{Binding PointsToUse, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="6,0" VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,6">
+                                <TextBlock Text="Spôsob platby:" VerticalAlignment="Center" Margin="0,0,6,0" />
+                                <ComboBox ItemsSource="{Binding PaymentMethods}" SelectedItem="{Binding SelectedPaymentMethod}" Width="140" />
+                                <TextBlock Text="Kuriér:" VerticalAlignment="Center" Margin="12,0,6,0" />
+                                <ComboBox ItemsSource="{Binding Couriers}" SelectedItem="{Binding SelectedCourier}" Width="160" />
+                            </StackPanel>
+                        </StackPanel>
+
                         <DockPanel Margin="0,10">
-                            <TextBlock Text="SPOLU" FontWeight="Bold" FontSize="20"/>
-                            <TextBlock Text="{Binding Total, StringFormat={}{0:N2}€}" HorizontalAlignment="Right" FontWeight="Bold" FontSize="20" Foreground="{StaticResource AccentColor}"/>
+                            <TextBlock Text="SPOLU" FontWeight="Bold" FontSize="20" />
+                            <TextBlock Text="{Binding Total, StringFormat={}{0:N2}€}" HorizontalAlignment="Right" FontWeight="Bold" FontSize="20" Foreground="{StaticResource AccentColor}" />
                         </DockPanel>
+
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                            <Button Content="Vymazať košík" Width="140" Margin="0,0,10,0" Click="ClearCart_Click" Background="#DDD"/>
-                            <Button Content="ZAPLATIŤ" Style="{StaticResource PrimePlateButton}" Height="60" Click="Pay_Click"/>
+                            <Button Content="Vymazať košík" Width="140" Margin="0,0,10,0" Click="ClearCart_Click" Background="#DDD" />
+                            <Button Content="ZAPLATIŤ" Style="{StaticResource PrimePlateButton}" Height="60" Click="Pay_Click" />
                         </StackPanel>
                     </StackPanel>
                 </Grid>
