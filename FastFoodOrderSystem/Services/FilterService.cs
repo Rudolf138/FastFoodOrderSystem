@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace FastFoodOrderSystem
 {
-    // Criteria holder used by the filtering service
+    
     public class FilterCriteria
     {
         public string Restaurant { get; set; }
@@ -18,7 +18,7 @@ namespace FastFoodOrderSystem
         public string SortBy { get; set; }
     }
 
-    // Small filtering service to keep MainWindow logic tidy and testable
+    
     public static class FilterService
     {
         public static IEnumerable<FoodItem> Apply(IEnumerable<FoodItem> items, FilterCriteria c)

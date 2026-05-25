@@ -30,7 +30,7 @@ namespace FastFoodOrderSystem
             }
             catch
             {
-                // best-effort save, ignore errors to avoid crashing UI
+               
             }
         }
 

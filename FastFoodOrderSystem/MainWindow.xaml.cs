@@ -85,7 +85,7 @@ namespace FastFoodOrderSystem
             DataContext = this;
             InitializeComponent();
 
-            // Use EF Core SQLite for persistence. If DB empty, seed demo data.
+            
             using (var db = new AppDbContext())
             {
                 db.Database.EnsureCreated();
@@ -97,25 +97,25 @@ namespace FastFoodOrderSystem
                 }
                 else
                 {
-                    // seed demo items and save
+                    
                     LoadInitialData();
                     foreach (var it in AllItems) db.FoodItems.Add(it);
                     db.SaveChanges();
                 }
 
-                // load cart
+                
                 Cart.Clear();
                 foreach (var c in db.CartItems.AsNoTracking().ToList()) Cart.Add(c);
 
-                // recent orders
+                
                 RecentOrders.Clear();
                 foreach (var r in db.RecentOrders.OrderByDescending(x => x.CreatedAt).Select(x => x.Text).ToList()) RecentOrders.Add(r);
 
-                // settings
+               
                 var lp = db.Settings?.FirstOrDefault(x => x.Key == "LoyaltyPoints")?.Value;
                 if (!string.IsNullOrEmpty(lp) && int.TryParse(lp, out var pts)) LoyaltyPoints = pts;
 
-                // populate UI lists
+                
                 Restaurants.Clear(); Restaurants.Add("All");
                 foreach (var s in AllItems.Select(x => x.Restaurant).Distinct().OrderBy(x => x)) Restaurants.Add(s);
                 Cuisines.Clear(); Cuisines.Add("All");
@@ -130,13 +130,13 @@ namespace FastFoodOrderSystem
                 foreach (var it in AllItems) FilteredItems.Add(it);
             }
 
-            // auto-save on close (save cart, recent orders, loyalty points)
+            
             this.Closing += (s, e) =>
             {
                 using var db = new AppDbContext();
                 db.Database.EnsureCreated();
 
-                // sync FoodItems - simple replace for demo (in real app use migrations)
+                
                 if (!db.FoodItems.Any())
                 {
                     foreach (var it in AllItems) db.FoodItems.Add(it);
@@ -173,24 +173,24 @@ namespace FastFoodOrderSystem
 
             foreach (var r in restaurants)
             {
-                // create a small set of items per restaurant with some randomized metadata (rating, tags)
+                
                 for (int i = 0; i < 15; i++)
                 {
-                    // show friendly item name + original restaurant next to it, remove numeric suffix
+                    
                     var name = $"{baseNames[i % baseNames.Length]} - {r.Name}";
                     var category = categories[i % categories.Length];
                     decimal price = Math.Round(2.50m + (i % 7) * 1.75m + (r.Name.Length % 3) * 0.5m, 2);
                     decimal discount = (i % 6 == 0) ? 10m : ((i % 9 == 0) ? 15m : 0m);
 
-                    // add lightweight rating and tags for richer filtering
+                    
                     var rating = Math.Round(3.0 + (new Random((r.Name + i).GetHashCode()).NextDouble() * 2.0), 1);
                     var tagsPool = new[] { "spicy", "vegan", "gluten-free", "kids", "popular", "recommended", "new" };
                     var tags = new List<string>();
-                    // deterministic selection for simple demo data
+                   
                     if (i % 2 == 0) tags.Add(tagsPool[i % tagsPool.Length]);
                     if (i % 5 == 0) tags.Add(tagsPool[(i + 3) % tagsPool.Length]);
 
-                    var isFav = (i % 11 == 0); // mark a few as favorites
+                    var isFav = (i % 11 == 0); 
 
                     var item = new FoodItem(name, category, $"{category} from {r.Name}", price, r.Name, r.Cuisine, discount, rating, isFav, tags);
                     AllItems.Add(item);
@@ -225,7 +225,7 @@ namespace FastFoodOrderSystem
 
         private void ApplyFilters()
         {
-            // Delegate filtering to the service to keep logic concise and testable
+            
             var criteria = new FilterCriteria
             {
                 Restaurant = SelectedRestaurant,
@@ -297,7 +297,7 @@ namespace FastFoodOrderSystem
             pw.ShowDialog();
         }
 
-        // Show user's menu (favorites)
+        
         private void NavMyMenu_Click(object sender, RoutedEventArgs e)
         {
             ShowMyMenu();
@@ -376,15 +376,13 @@ namespace FastFoodOrderSystem
             StatusText.Text = $"Spracovávam platbu ({SelectedPaymentMethod})...";
             await Task.Delay(1000);
 
-            // Update loyalty
             int earnedPoints = (int)Math.Floor(amountAfterPoints);
             LoyaltyPoints = Math.Max(0, LoyaltyPoints - usedPoints) + earnedPoints;
             OnPropertyChanged(nameof(LoyaltyPoints));
 
-            // Record recent order
+            
             RecentOrders.Insert(0, $"{DateTime.Now:HH:mm} - Zaplatené: {amountAfterPoints:N2}€ - Body +{earnedPoints} - Platba: {SelectedPaymentMethod} - Kuriér: {SelectedCourier}");
 
-            // Show status
             StatusText.Text = $"Objednávka prijatá — kuriér: {SelectedCourier} — stav: V PRÍPRAVE";
 
             Cart.Clear();
@@ -406,13 +404,13 @@ namespace FastFoodOrderSystem
         public string Restaurant { get; set; }
         public string Cuisine { get; set; }
         public decimal Discount { get; set; } 
-        // extended metadata
+        
         public decimal PriceAfterDiscount => Math.Round(Price * (1 - Discount / 100m), 2);
         public double Rating { get; set; }
         public bool IsFavorite { get; set; }
         public List<string> Tags { get; set; }
 
-        // Parameterless constructor required by EF Core for materialization
+                
         public FoodItem()
         {
             Tags = new List<string>();

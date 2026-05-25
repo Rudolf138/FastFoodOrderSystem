@@ -1,6 +1,6 @@
 namespace FastFoodOrderSystem
 {
-    // Small helper model for category metadata
+    
     public class Category
     {
         public string Name { get; set; }
